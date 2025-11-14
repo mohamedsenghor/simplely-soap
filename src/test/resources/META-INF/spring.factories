@@ -1,0 +1,6 @@
+org.springframework.test.context.ContextCustomizerFactory = \
+    dev.black.simplelysoap.config.\
+    SqlTestContainersSpringContextCustomizerFactory,dev.black.simplelysoap.\
+    config.TestContainersSpringContextCustomizerFactory,dev.black.simplelysoap.\
+    config.RedisTestContainersSpringContextCustomizerFactory,dev.black.\
+    simplelysoap.config.KafkaTestContainersSpringContextCustomizerFactory
