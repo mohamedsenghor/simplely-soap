@@ -3,6 +3,7 @@
 ## 0. Technologies
 
 Le projet est généré avec JHipster version 8.11.0 et est un microservice SOAP tournant sur le port 8085.
+Les entités JHipster sont définies dans le package `fr.blackdev.bank.domain` et obtenus avec un fichier JDL. A cet effet, les données sont réellement stockées dans une base de données `PostgreSQL`.
 
 ## 1\. 🏗️ Architecture et Flux de Requêtes
 
@@ -10,11 +11,11 @@ Ce projet met en œuvre une architecture de microservices JHipster, où le servi
 
 ### A. Composants Clés
 
-| Composant                               | Rôle                                                                                          | Technologie                                                                                             |
-| :-------------------------------------- | :-------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ | ---------------------------------- |
-| **Gateway** (`localhost:8080`)          | Point d'entrée unique. Gère la sécurité (JWT), le routage dynamique et le proxy des requêtes. | JHipster (Spring Cloud Gateway)                                                                         |
-| **Registry** (`localhost:8761`)         | Serveur de découverte de services (Eureka). Maintient l'état des microservices.               | JHipster Registry                                                                                       |
-| **Microservice SOAP** (`locahost:8085`) |                                                                                               | Contient la logique métier (CRUD sur `Client`, `Transfer`, `Payment`) et expose les fonctions via SOAP. | JHipster (Spring Boot + Spring-WS) |
+| Composant                                | Rôle                                                                                                    | Technologie                        |
+| :--------------------------------------- | :------------------------------------------------------------------------------------------------------ | :--------------------------------- |
+| **Gateway** (`localhost:8080`)           | Point d'entrée unique. Gère la sécurité (JWT), le routage dynamique et le proxy des requêtes.           | JHipster (Spring Cloud Gateway)    |
+| **Registry** (`localhost:8761`)          | Serveur de découverte de services (Eureka). Maintient l'état des microservices.                         | JHipster Registry                  |
+| **Microservice SOAP** (`localhost:8085`) | Contient la logique métier (CRUD sur `Client`, `Transfer`, `Payment`) et expose les fonctions via SOAP. | JHipster (Spring Boot + Spring-WS) |
 
 ### B. Flux d'une Requête SOAP via la Gateway
 
