@@ -1,192 +1,57 @@
-# simpleLySoap
+# Architecture SOAP Microservice & Gateway
 
-This application was generated using JHipster 8.11.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.11.0](https://www.jhipster.tech/documentation-archive/v8.11.0).
+## 0. Technologies
 
-This is a "microservice" application intended to be part of a microservice architecture, please refer to the [Doing microservices with JHipster][] page of the documentation for more information.
+Le projet est généré avec JHipster version 8.11.0 et est un microservice SOAP tournant sur le port 8085.
 
-This application is configured for Service Discovery and Configuration with the JHipster-Registry. On launch, it will refuse to start if it is not able to connect to the JHipster-Registry at [http://localhost:8761](http://localhost:8761). For more information, read our documentation on [Service Discovery and Configuration with the JHipster-Registry][].
+## 1\. 🏗️ Architecture et Flux de Requêtes
 
-## Project Structure
+Ce projet met en œuvre une architecture de microservices JHipster, où le service SOAP est exposé au monde extérieur via une Gateway tournant sur le port 8080.
 
-Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.
+### A. Composants Clés
 
-In the project root, JHipster generates configuration files for tools like git, prettier, eslint, husky, and others that are well known and you can find references in the web.
+| Composant                               | Rôle                                                                                          | Technologie                                                                                             |
+| :-------------------------------------- | :-------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| **Gateway** (`localhost:8080`)          | Point d'entrée unique. Gère la sécurité (JWT), le routage dynamique et le proxy des requêtes. | JHipster (Spring Cloud Gateway)                                                                         |
+| **Registry** (`localhost:8761`)         | Serveur de découverte de services (Eureka). Maintient l'état des microservices.               | JHipster Registry                                                                                       |
+| **Microservice SOAP** (`locahost:8085`) |                                                                                               | Contient la logique métier (CRUD sur `Client`, `Transfer`, `Payment`) et expose les fonctions via SOAP. | JHipster (Spring Boot + Spring-WS) |
 
-`/src/*` structure follows default Java structure.
+### B. Flux d'une Requête SOAP via la Gateway
 
-- `.yo-rc.json` - Yeoman configuration file
-  JHipster configuration is stored in this file at `generator-jhipster` key. You may find `generator-jhipster-*` for specific blueprints configuration.
-- `.yo-resolve` (optional) - Yeoman conflict resolver
-  Allows to use a specific action when conflicts are found skipping prompts for files that matches a pattern. Each line should match `[pattern] [action]` with pattern been a [Minimatch](https://github.com/isaacs/minimatch#minimatch) pattern and action been one of skip (default if omitted) or force. Lines starting with `#` are considered comments and are ignored.
-- `.jhipster/*.json` - JHipster entity configuration files
-- `/src/main/docker` - Docker configurations for the application and services that the application depends on
+1.  **Client (ex: SoapUI)** envoie une requête SOAP (XML) à la Gateway, en utilisant le chemin du service découvert
+2.  La **Gateway** intercepte la requête, valide le token JWT (si la sécurité n'est pas contournée pour `/services/simplelysoap/soap/**`), et utilise le Service ID (`simplelysoap`) pour localiser le microservice via le Registry.
+3.  La Gateway forwarde la requête (XML) au microservice
+4.  Le **Microservice SOAP** reçoit la requête via le `MessageDispatcherServlet`.
+5.  La classe `BanqueResource`, annotée `@Endpoint`, mappe le message SOAP (`{http://www.black.dev/banque}addClientRequest`) à la méthode Java correspondante (`addClient`) grâce à l'annotation `@PayloadRoot`.
+6.  La logique métier est exécutée (ex: `clientService.save(clientDTO)`).
+7.  La réponse est renvoyée en sens inverse.
 
-## Development
+---
 
-To start your application in the dev profile, run:
+## 2\. Documentation des Tests (SoapUI)
 
-```
-./mvnw
-```
+Les tests sont réalisés en utilisant **SoapUI** mais aussi Postman pour l'obtention du WSDL avec la Gateway et directement avec le Microservice.
 
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
+### A. URL de Configuration
 
-### Doing API-First development using openapi-generator-cli
+{WSDL URL} = http://localhost:8080/services/simplelysoap/soap/banque.wsdl
 
-[OpenAPI-Generator]() is configured for this application. You can generate API code from the `src/main/resources/swagger/api.yml` definition file by running:
+### Récupération du WSDL depuis la Gateway sur Postman
 
-```bash
-./mvnw generate-sources
-```
+![Récupération du WSDL depuis la Gateway Postman](/images/gateway_wsdl.png)
 
-Then implements the generated delegate classes with `@Service` classes.
+#### Récupération du WSDL depuis le Microservice sur Postman
 
-To edit the `api.yml` definition file, you can use a tool such as [Swagger-Editor](). Start a local instance of the swagger-editor using docker by running: `docker compose -f src/main/docker/swagger-editor.yml up -d`. The editor will then be reachable at [http://localhost:7742](http://localhost:7742).
+![Récupération du WSDL depuis le Microservice Postman](/images/internal_wsdl.png)
 
-Refer to [Doing API-First development][] for more details.
+### B. Exemple de Test : `addClientRequest`
 
-## Building for production
+Cette opération est utilisée pour créer un nouveau client.
 
-### Packaging as jar
+![Création d'un client sur SOAP UI](/images/create_client.png)
 
-To build the final jar and optimize the simpleLySoap application for production, run:
+### C. Exemple de Test : `getSoldeRequest`
 
-```
-./mvnw -Pprod clean verify
-```
+Cette opération permet de récupérer le solde d'un client existant.
 
-To ensure everything worked, run:
-
-```
-java -jar target/*.jar
-```
-
-Refer to [Using JHipster in production][] for more details.
-
-### Packaging as war
-
-To package your application as a war in order to deploy it to an application server, run:
-
-```
-./mvnw -Pprod,war clean verify
-```
-
-### JHipster Control Center
-
-JHipster Control Center can help you manage and control your application(s). You can start a local control center server (accessible on http://localhost:7419) with:
-
-```
-docker compose -f src/main/docker/jhipster-control-center.yml up
-```
-
-## Testing
-
-### Spring Boot tests
-
-To launch your application's tests, run:
-
-```
-./mvnw verify
-```
-
-## Others
-
-### Code quality using Sonar
-
-Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
-
-```
-docker compose -f src/main/docker/sonar.yml up -d
-```
-
-Note: we have turned off forced authentication redirect for UI in [src/main/docker/sonar.yml](src/main/docker/sonar.yml) for out of the box experience while trying out SonarQube, for real use cases turn it back on.
-
-You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or by using the maven plugin.
-
-Then, run a Sonar analysis:
-
-```
-./mvnw -Pprod clean verify sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
-```
-
-If you need to re-run the Sonar phase, please be sure to specify at least the `initialize` phase since Sonar properties are loaded from the sonar-project.properties file.
-
-```
-./mvnw initialize sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
-```
-
-Additionally, Instead of passing `sonar.password` and `sonar.login` as CLI arguments, these parameters can be configured from [sonar-project.properties](sonar-project.properties) as shown below:
-
-```
-sonar.login=admin
-sonar.password=admin
-```
-
-For more information, refer to the [Code quality page][].
-
-### Docker Compose support
-
-JHipster generates a number of Docker Compose configuration files in the [src/main/docker/](src/main/docker/) folder to launch required third party services.
-
-For example, to start required services in Docker containers, run:
-
-```
-docker compose -f src/main/docker/services.yml up -d
-```
-
-To stop and remove the containers, run:
-
-```
-docker compose -f src/main/docker/services.yml down
-```
-
-[Spring Docker Compose Integration](https://docs.spring.io/spring-boot/reference/features/dev-services.html) is enabled by default. It's possible to disable it in application.yml:
-
-```yaml
-spring:
-  ...
-  docker:
-    compose:
-      enabled: false
-```
-
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a Docker image of your app by running:
-
-```sh
-npm run java:docker
-```
-
-Or build a arm64 Docker image when using an arm64 processor os like MacOS with M1 processor family running:
-
-```sh
-npm run java:docker:arm64
-```
-
-Then run:
-
-```sh
-docker compose -f src/main/docker/app.yml up -d
-```
-
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the Docker Compose sub-generator (`jhipster docker-compose`), which is able to generate Docker configurations for one or several JHipster applications.
-
-## Continuous Integration (optional)
-
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
-
-[JHipster Homepage and latest documentation]: https://www.jhipster.tech
-[JHipster 8.11.0 archive]: https://www.jhipster.tech/documentation-archive/v8.11.0
-[Doing microservices with JHipster]: https://www.jhipster.tech/documentation-archive/v8.11.0/microservices-architecture/
-[Using JHipster in development]: https://www.jhipster.tech/documentation-archive/v8.11.0/development/
-[Service Discovery and Configuration with the JHipster-Registry]: https://www.jhipster.tech/documentation-archive/v8.11.0/microservices-architecture/#jhipster-registry
-[Using Docker and Docker-Compose]: https://www.jhipster.tech/documentation-archive/v8.11.0/docker-compose
-[Using JHipster in production]: https://www.jhipster.tech/documentation-archive/v8.11.0/production/
-[Running tests page]: https://www.jhipster.tech/documentation-archive/v8.11.0/running-tests/
-[Code quality page]: https://www.jhipster.tech/documentation-archive/v8.11.0/code-quality/
-[Setting up Continuous Integration]: https://www.jhipster.tech/documentation-archive/v8.11.0/setting-up-ci/
-[Node.js]: https://nodejs.org/
-[NPM]: https://www.npmjs.com/
-[OpenAPI-Generator]: https://openapi-generator.tech
-[Swagger-Editor]: https://editor.swagger.io
-[Doing API-First development]: https://www.jhipster.tech/documentation-archive/v8.11.0/doing-api-first-development/
+![Récupération du solde du client nouvellement créé sur SOAP UI](/images/get_solde.png)

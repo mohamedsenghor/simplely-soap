@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://www.black.dev/banque" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.black.dev/banque" targetNamespace="http://www.black.dev/banque">
+  <wsdl:types>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified" targetNamespace="http://www.black.dev/banque">
+      <xs:complexType name="clientInfo">
+        <xs:sequence>
+          <xs:element name="numeroTel" type="xs:long"/>
+          <xs:element name="solde" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="serviceStatus">
+        <xs:sequence>
+          <xs:element name="status" type="xs:string"/>
+          <xs:element name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="addClientRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="client" type="tns:clientInfo"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ClientResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="status" type="tns:serviceStatus"/>
+            <xs:element name="client" type="tns:clientInfo"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getSoldeRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="tel" type="xs:long"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SoldeResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="solde" type="xs:long"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="transferInfo">
+        <xs:sequence>
+          <xs:element name="numberSender" type="xs:long"/>
+          <xs:element name="numberReceive" type="xs:long"/>
+          <xs:element name="amountSent" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="addTransferRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="transfer" type="tns:transferInfo"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="TransferResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="transfer" type="tns:transferInfo"/>
+            <xs:element name="status" type="tns:serviceStatus"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="paymentInfo">
+        <xs:sequence>
+          <xs:element name="numberReceive" type="xs:long"/>
+          <xs:element name="amountSent" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="addPaymentRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="payment" type="tns:paymentInfo"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="PaymentResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="payment" type="tns:paymentInfo"/>
+            <xs:element name="status" type="tns:serviceStatus"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="ClientResponse">
+    <wsdl:part element="tns:ClientResponse" name="ClientResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addPaymentRequest">
+    <wsdl:part element="tns:addPaymentRequest" name="addPaymentRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addTransferRequest">
+    <wsdl:part element="tns:addTransferRequest" name="addTransferRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="TransferResponse">
+    <wsdl:part element="tns:TransferResponse" name="TransferResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addClientRequest">
+    <wsdl:part element="tns:addClientRequest" name="addClientRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSoldeRequest">
+    <wsdl:part element="tns:getSoldeRequest" name="getSoldeRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="PaymentResponse">
+    <wsdl:part element="tns:PaymentResponse" name="PaymentResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SoldeResponse">
+    <wsdl:part element="tns:SoldeResponse" name="SoldeResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="BanquePort">
+    <wsdl:operation name="Client">
+      <wsdl:output message="tns:ClientResponse" name="ClientResponse">
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addPayment">
+      <wsdl:input message="tns:addPaymentRequest" name="addPaymentRequest">
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="addTransfer">
+      <wsdl:input message="tns:addTransferRequest" name="addTransferRequest">
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Transfer">
+      <wsdl:output message="tns:TransferResponse" name="TransferResponse">
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addClient">
+      <wsdl:input message="tns:addClientRequest" name="addClientRequest">
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="getSolde">
+      <wsdl:input message="tns:getSoldeRequest" name="getSoldeRequest">
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Payment">
+      <wsdl:output message="tns:PaymentResponse" name="PaymentResponse">
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solde">
+      <wsdl:output message="tns:SoldeResponse" name="SoldeResponse">
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BanquePortSoap11" type="tns:BanquePort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Client">
+      <soap:operation soapAction=""/>
+      <wsdl:output name="ClientResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addPayment">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="addPaymentRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="addTransfer">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="addTransferRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Transfer">
+      <soap:operation soapAction=""/>
+      <wsdl:output name="TransferResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addClient">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="addClientRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="getSolde">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="getSoldeRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Payment">
+      <soap:operation soapAction=""/>
+      <wsdl:output name="PaymentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solde">
+      <soap:operation soapAction=""/>
+      <wsdl:output name="SoldeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BanquePortService">
+    <wsdl:port binding="tns:BanquePortSoap11" name="BanquePortSoap11">
+      <soap:address location="http://localhost:8085/soap"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,46 @@
+{
+  "annotations": {
+    "changelogDate": "20251114093449"
+  },
+  "applications": "*",
+  "clientRootFolder": "simpleLySoap",
+  "databaseType": "sql",
+  "documentation": "Entité de Virement (basée sur transferInfo).\\nLe numberSender et le numberReceive du XSD sont remplacés par des relations Client.\\nLes champs numberSender et numberReceive du XSD deviennent les noms des relations.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "amountSent",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "dateTransaction",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "microserviceName": "simpleLySoap",
+  "name": "Transfer",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "numeroTel",
+      "otherEntityName": "client",
+      "relationshipName": "sender",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "numeroTel",
+      "otherEntityName": "client",
+      "relationshipName": "receiver",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

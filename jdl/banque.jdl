@@ -1,0 +1,57 @@
+// ==============================================
+// 1. Entité Client (Correspond à clientInfo)
+// Elle sert de base pour les relations.
+// ==============================================
+entity Client {
+  numeroTel Long required unique
+  solde Long required min(0)
+}
+
+// ==============================================
+// 2. Entités de Transaction (Historique)
+// ==============================================
+
+/**
+ * Entité de Virement (basée sur transferInfo).
+ * Le numberSender et le numberReceive du XSD sont remplacés par des relations Client.
+ * Les champs numberSender et numberReceive du XSD deviennent les noms des relations.
+ */
+entity Transfer {
+  amountSent Long required min(1)
+  dateTransaction Instant required
+}
+
+/**
+ * Entité de Paiement (basée sur paymentInfo).
+ * Le Client Initiateur est la source des fonds.
+ */
+entity Payment {
+  numberReceive Long required // Le numéro externe du récepteur (conservé du XSD, car il peut ne pas être un Client)
+  amountSent Long required min(1)
+  dateTransaction Instant required
+}
+
+
+// ==============================================
+// 3. Relations Many-to-One
+// (Plusieurs transactions pour un seul Client)
+// ==============================================
+relationship ManyToOne {
+  // 1. Un Client peut initier plusieurs virements.
+  Transfer{sender(numeroTel) required} to Client,
+
+  // 2. Un Client peut être le destinataire de plusieurs virements.
+  Transfer{receiver(numeroTel) required} to Client,
+
+  // 3. Un Client peut initier plusieurs paiements.
+  Payment{initiator(numeroTel) required} to Client
+}
+
+
+// ==============================================
+// 4. Configuration JHipster
+// Crée la couche Service, les DTOs et la pagination.
+// ==============================================
+service Client, Transfer, Payment with serviceClass
+dto Client, Transfer, Payment with mapstruct
+paginate Client, Transfer, Payment with pagination

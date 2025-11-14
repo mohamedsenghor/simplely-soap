@@ -1,0 +1,28 @@
+{
+  "annotations": {
+    "changelogDate": "20251114093448"
+  },
+  "applications": "*",
+  "clientRootFolder": "simpleLySoap",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "numeroTel",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required", "unique"]
+    },
+    {
+      "fieldName": "solde",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    }
+  ],
+  "microserviceName": "simpleLySoap",
+  "name": "Client",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

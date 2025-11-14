@@ -1,0 +1,102 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.black.dev/banque"
+           targetNamespace="http://www.black.dev/banque" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           elementFormDefault="qualified">
+
+    <xs:complexType name="clientInfo">
+        <xs:sequence>
+            <xs:element name="numeroTel" type="xs:long"/>
+            <xs:element name="solde" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="serviceStatus">
+        <xs:sequence>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="message" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="addClientRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="client" type="tns:clientInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ClientResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+                <xs:element name="client" type="tns:clientInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getSoldeRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tel" minOccurs="1" maxOccurs="1"  type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="SoldeResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="solde" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="transferInfo">
+        <xs:sequence>
+            <xs:element name="numberSender" type="xs:long"/>
+            <xs:element name="numberReceive" type="xs:long"/>
+            <xs:element name="amountSent" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:element name="addTransferRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="transfer" type="tns:transferInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="TransferResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="transfer" type="tns:transferInfo" />
+                <xs:element name="status" type="tns:serviceStatus" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="paymentInfo">
+        <xs:sequence>
+            <xs:element name="numberReceive" type="xs:long"/>
+            <xs:element name="amountSent" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="addPaymentRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="payment" type="tns:paymentInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="PaymentResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="payment" type="tns:paymentInfo"/>
+                <xs:element name="status" type="tns:serviceStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

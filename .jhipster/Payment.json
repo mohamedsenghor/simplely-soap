@@ -1,0 +1,43 @@
+{
+  "annotations": {
+    "changelogDate": "20251114093450"
+  },
+  "applications": "*",
+  "clientRootFolder": "simpleLySoap",
+  "databaseType": "sql",
+  "documentation": "Entité de Paiement (basée sur paymentInfo).\\nLe Client Initiateur est la source des fonds.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "numberReceive",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "amountSent",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "dateTransaction",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "microserviceName": "simpleLySoap",
+  "name": "Payment",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "numeroTel",
+      "otherEntityName": "client",
+      "relationshipName": "initiator",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
